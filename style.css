@@ -1,28 +1,7 @@
 .main {
     text-align: center;
     margin-top: 10px;
-}
-
-ul {
-    list-style-type: none;
-    overflow: hidden;
-}
-
-li {
-    float: right;
-}
-
-li a {
-    color: #000;
-    display: block;
-    text-align: center;
-    padding: 10px 10px;
-    text-decoration: none;
-    font-size: 14px;
-}
-
-li a:hover {
-    text-decoration: underline;
+    font-family: sans-serif;
 }
 
 .bar {
@@ -33,11 +12,6 @@ li a:hover {
 
 .bar:hover {
     box-shadow: 1px 1px 8px 1px #dcdcdc;
-}
-
-.bar:focus-within {
-    box-shadow: 1px 1px 8px 1px #dcdcdc;
-    outline: none;
 }
 
 .searchbar {
@@ -72,11 +46,6 @@ li a:hover {
     border: 1px solid #c8c8c8;
     padding: 9px 19px;
     color: #808080;
-}
-
-.button:focus {
-    border: 1px solid #4885ed;
-    padding: 9px 19px;
 }
 
 .container {
