@@ -36,14 +36,15 @@ Resources:
         "Version": "2012-10-17",
         "Id": "Policy1607802088415",
         "Statement": [
-          {
-            "Sid": "Stmt1607802083689",
-            "Action": [
-                "s3:GetObject"
-            ],
+         {
+            "Sid": "Stmt1607809157926",
             "Effect": "Allow",
-            "Resource": "arn:aws:s3:::a3-b2-jars",
-            "Principal": "*"
+            "Principal": "*",
+            "Action": [
+                "s3:GetObject",
+                "s3:PutObject"
+            ],
+            "Resource": "arn:aws:s3:::a3-b2-jars/*"
           }
         ]
       }
@@ -63,107 +64,106 @@ Resources:
       RestApiId: !Ref RestApi
       StageName: v1
 
-  # Photo:
-  #   Type: AWS::ApiGateway::Model
-  #   Properties: 
-  #     ContentType: objcet
-  #     Description: Photo model
-  #     Name: Photo
-  #     RestApiId: !Ref RestApi
-  #     Schema: 
-  #       url:
-  #         type: string
-  #       labels:
-  #         type: array
-  #         items:
-  #           type: string
+  Photo:
+    Type: AWS::ApiGateway::Model
+    Properties: 
+      ContentType: objcet
+      Description: Photo model
+      Name: Photo
+      RestApiId: !Ref RestApi
+      Schema: 
+        url:
+          type: string
+        labels:
+          type: array
+          items:
+            type: string
 
-  # SearchResponse:
-  #   Type: AWS::ApiGateway::Model
-  #   Properties: 
-  #     ContentType: objcet
-  #     Description: SearchResponse model
-  #     Name: SearchResponse
-  #     RestApiId: !Ref RestApi
-  #     Schema: 
-  #       results:
-  #         type: array
-  #         items: !Ref Photo
+  SearchResponse:
+    Type: AWS::ApiGateway::Model
+    Properties: 
+      ContentType: objcet
+      Description: SearchResponse model
+      Name: SearchResponse
+      RestApiId: !Ref RestApi
+      Schema: 
+        results:
+          type: array
+          items: !Ref Photo
         
-  # Error:
-  #   Type: AWS::ApiGateway::Model
-  #   Properties: 
-  #     ContentType: objcet
-  #     Description: Error model
-  #     Name: Error
-  #     RestApiId: !Ref RestApi
-  #     Schema: 
-  #       code:
-  #         type: integer
-  #         format: int32
-  #       message:
-  #         type: string 
+  Error:
+    Type: AWS::ApiGateway::Model
+    Properties: 
+      ContentType: objcet
+      Description: Error model
+      Name: Error
+      RestApiId: !Ref RestApi
+      Schema: 
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string 
 
-  # SearchParameter:
-  #   Type: AWS::ApiGateway::Model
-  #   Properties: 
-  #     ContentType: objcet
-  #     Description: SearchParameter model
-  #     Name: q
-  #     RestApiId: !Ref RestApi
-  #     Schema: 
-  #       type: string
+  SearchParameter:
+    Type: AWS::ApiGateway::Model
+    Properties: 
+      ContentType: objcet
+      Description: SearchParameter model
+      Name: q
+      RestApiId: !Ref RestApi
+      Schema: 
+        type: string
 
-  # searchmethod:
-  #   Type: AWS::ApiGateway::Method
-  #   Properties:
-  #     ApiKeyRequired: True
-  #     HttpMethod: GET
-  #     Integration:
-  #       IntegrationHttpMethod: "GET"
-  #       Type: "AWS_PROXY"
-  #       Uri: "arn:aws:lambda:us-east-1:lambda:/2015-03-31/functions/arn:aws:lambda:us-east-1:178190676612:function:search-photos/invocations"
-  #     MethodResponses: 
-  #         - 
-  #           ResponseModels: 
-  #             application/json: SearchResponse
-  #           StatusCode: 200
-  #         - 
-  #           ResponseModels: 
-  #             application/json: Error
-  #           StatusCode: 403
-  #         - 
-  #           ResponseModels: 
-  #             application/json: Error
-  #           StatusCode: 500
-  #     RequestParameters: 
-  #       method.request.path.q: true
-  #     ResourceId: !GetAtt RestApi.RootResourceId
-  #     RestApiId: !Ref RestApi
+  searchmethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      ApiKeyRequired: False
+      HttpMethod: GET
+      Integration:
+        IntegrationHttpMethod: "GET"
+        Type: "AWS_PROXY"
+        Uri: "arn:aws:lambda:us-east-1:456240511584:function:A3-LF2"
+      MethodResponses: 
+          - 
+            ResponseModels: 
+              application/json: SearchResponse
+            StatusCode: 200
+          - 
+            ResponseModels: 
+              application/json: Error
+            StatusCode: 403
+          - 
+            ResponseModels: 
+              application/json: Error
+            StatusCode: 500
+      RequestParameters: 
+        method.request.path.q: true
+      ResourceId: !GetAtt RestApi.RootResourceId
+      RestApiId: !Ref RestApi
       
-  # uploadmethod:
-  #   Type: AWS::ApiGateway::Method
-  #   Properties:
-  #     ApiKeyRequired: True
-  #     HttpMethod: PUT
-  #     Integration:
-  #       IntegrationHttpMethod: PUT
-  #       Type: "AWS_PROXY"
-  #       Uri: "arn:aws:lambda:us-east-1:lambda:/2015-03-31/functions/arn:aws:lambda:us-east-1:178190676612:function:index-photos/invocations"
-  #     MethodResponses: 
-  #         -
-  #           StatusCode: 200
-  #         -
-  #           ResponseModels: 
-  #             application/json: Error
-  #           StatusCode: 403
-  #         -
-  #           ResponseModels: 
-  #             application/json: Error
-  #           StatusCode: 500
-  #     OperationName: uploadPhoto
-  #     ResourceId: !GetAtt RestApi.RootResourceId
-  #     RestApiId: !Ref RestApi
+  uploadmethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      ApiKeyRequired: False
+      HttpMethod: PUT
+      Integration:
+        IntegrationHttpMethod: PUT
+        Type: "AWS"
+        Uri: arn:aws:apigateway:us-east-1-2:s3:action/PutObject&Bucket={bucket}&Key={key}"
+      MethodResponses: 
+          -
+            StatusCode: 200
+          -
+            ResponseModels: 
+              application/json: Error
+            StatusCode: 403
+          -
+            ResponseModels: 
+              application/json: Error
+            StatusCode: 500
+      ResourceId: !GetAtt RestApi.RootResourceId
+      RestApiId: !Ref RestApi
       
   # photoindexlambda:
   #   Type: AWS::Lambda::Function
