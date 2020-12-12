@@ -16,27 +16,37 @@
         </h1>
 
         <div class="bar">
-            <input style="display:inline-block;" id="searchbar" class="searchbar" type="text" title="Search" placeholder="Search for photos">
-            <span>
-                <a style="display:inline-block;" href="#" onclick="searchFromVoice()"> 
-                <img class="voice" style="display:inline;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Google_mic.svg/716px-Google_mic.svg.png" title="Search by Voice">
+            <input id="searchbar" class="searchbar" type="text" title="Search" placeholder="Search for photos">
+            <a href="#" onclick="searchFromVoice(); return false">
+                <img class="voice" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Google_mic.svg/716px-Google_mic.svg.png" title="Search by Voice">
             </a>
-        </span>
         </div>
-
         <div class="buttons">
             <input type="file" id="realfile" onchange="previewFile(this);" hidden="hidden" />
-            <button onclick="search()" class="button" type="button">Search Photos</button>
-            <button onclick="upload()" class="button" type="button">Upload Photos</button>
-
+            <button class="btn btn-dark" onclick="search()" class="button" type="button">Search Photos</button>
+            <button class="btn btn-dark" onclick="upload()" class="button" type="button">Upload Photos</button>
         </div>
+
         <div class="container" id="images">
+
         </div>
     </div>
+
+    <!-- API -->
+    <script type="text/javascript" src="lib/axios/dist/axios.standalone.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/rollups/hmac-sha256.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/rollups/sha256.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/components/hmac.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/components/enc-base64.js"></script>
+    <script type="text/javascript" src="lib/url-template/url-template.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/sigV4Client.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/apiGatewayClient.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/simpleHttpClient.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/utils.js"></script>
+    <script type="text/javascript" src="apigClient.js"></script>
+
     <script src="app.js"></script>
     <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
 
 </body>
 

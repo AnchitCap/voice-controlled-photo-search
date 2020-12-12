@@ -13,3 +13,108 @@ function searchFromVoice() {
         search();
     }
 }
+
+function search() {
+    var searchTerm = document.getElementById("searchbar").value;
+    var apigClient = apigClientFactory.newClient();
+
+    var params = {
+        "q": searchTerm
+    };
+    var body = {
+        "q": searchTerm
+    };
+
+    var additionalParams = {
+        queryParams: {
+            q: searchTerm
+        }
+    };
+    apigClient.searchGet(params, body, additionalParams)
+        .then(function(result) {
+            console.log('OK');
+            console.log(result)
+            showImages(result.data);
+        }).catch(function(result) {
+            console.log("Not OK");
+        });
+}
+
+
+function showImages(res) {
+    var newDiv = document.getElementById("images");
+    if (typeof(newDiv) != 'undefined' && newDiv != null) {
+        while (newDiv.firstChild) {
+            newDiv.removeChild(newDiv.firstChild);
+        }
+    }
+
+    console.log(res);
+    console.log(res.Responses.length);
+    if (res.Responses.length == 0) {
+        var newContent = document.createTextNode("No image to display");
+        newDiv.appendChild(newContent);
+    } else {
+        for (var i = 0; i < res.Responses.length; i++) {
+            console.log(res.Responses[i]);
+            var newDiv = document.getElementById("images");
+            var newimg = document.createElement("img");
+            newimg.src = res.Responses[i].url;
+            newDiv.appendChild(newimg);
+        }
+    }
+}
+
+const realFileBtn = document.getElementById("realfile");
+console.log(realFileBtn);
+
+function upload() {
+    realFileBtn.click();
+}
+
+function previewFile(input) {
+
+    var reader = new FileReader();
+    name = input.files[0].name;
+    console.log(name);
+    fileExt = name.split(".").pop();
+    var onlyname = name.replace(/\.[^/.]+$/, "");
+    var finalName = onlyname + "_" + Date.now() + "." + fileExt;
+    name = finalName;
+
+    reader.onload = function(e) {
+        var src = e.target.result;
+
+        var newImage = document.createElement("img");
+        newImage.src = src;
+        encoded = newImage.outerHTML;
+        console.log(encoded);
+
+        last_index_quote = encoded.lastIndexOf('"');
+        if (fileExt == 'jpg' || fileExt == 'jpeg' || fileExt == 'png') {
+            encodedStr = encoded.substring(33, last_index_quote);
+        } else {
+            encodedStr = encoded.substring(32, last_index_quote);
+        }
+        var apigClient = apigClientFactory.newClient();
+
+        var params = {
+            "key": name,
+            "bucket": "voicealbumb2",
+            "Content-Type": "image/jpg;base64"
+
+        };
+
+        var additionalParams = {
+            headers: {}
+        };
+        console.log(encodedStr);
+        apigClient.uploadPut(params, encodedStr, additionalParams)
+            .then(function(result) {
+                console.log('success OK');
+            }).catch(function(result) {
+                console.log(result);
+            });
+    }
+    reader.readAsDataURL(input.files[0]);
+}
