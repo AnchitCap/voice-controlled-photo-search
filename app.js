@@ -109,7 +109,7 @@ function previewFile(input) {
             headers: {}
         };
         console.log(encodedStr);
-        apigClient.uploadPut(params, encodedStr, additionalParams)
+        apigClient.uploadBucketKeyPut(params, encodedStr, additionalParams)
             .then(function(result) {
                 console.log('success OK');
             }).catch(function(result) {
