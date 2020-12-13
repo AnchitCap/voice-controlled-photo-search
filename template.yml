@@ -36,6 +36,6 @@ Resources:
        FunctionName: Lexbot-fulfillment-cloudformation
        MemorySize: 128
        Timeout: 30
-       Handler: lexbot-fulfillment.lambda_handler
+       Handler: lexbot-fulfillment.handler
        Runtime: nodejs12.x
        CodeUri: ./src/lexbot
