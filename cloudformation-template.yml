@@ -248,7 +248,7 @@ Resources:
                 Owner: AnchitCap
                 Repo: voice-controlled-photo-search
                 Branch: main
-                OAuthToken: 514b8a54386fd3ad7b20a54c7f097d9030079c05
+                #OAuthToken: 514b8a54386fd3ad7b20a54c7f097d9030079c05
               OutputArtifacts:
                 -                
                   Name: SourceArtifact
@@ -269,24 +269,28 @@ Resources:
               OutputArtifacts: 
                 -
                   Name: BuildArtifact
-              RunOrder: 1
+              RunOrder: 1         
+          
         -
-          # Name: Deploy
-          # Actions: 
-          #   - 
-          #     Name: DeployAction
-          #     ActionTypeId: 
-          #       Category: Build 
-          #       Owner: AWS 
-          #       Version: 1 
-          #       Provider: AWS CloudFormation
-          #     InputArtifacts:
-          #       -
-          #         Name: BuildArtifact
-          #     Configuration:
-          #       ApplicationName: PhotoAlbum
-          #       DeploymentGroupName: MyDemoDeploymentGroup
-          #     RunOrder: 1   
+          Name: ExecuteChangeSet
+          ActionTypeId:
+            Category: Deploy
+            Owner: AWS
+            Provider: CloudFormation
+            Version: '1'
+            RunOrder: 2
+          Configuration:
+            ActionMode: CHANGE_SET_EXECUTE
+            Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
+            ChangeSetName: as-cp-1-set
+            #ParameterOverrides: '{"ProjectId": "my-project","CodeDeployRole": "CodeDeploy_Role_ARN"}'
+            RoleArn: arn:aws:iam::456240511584:role/a3-cloud-formation-role
+            StackName: as-cp-1-stack
+            #TemplateConfiguration: 'as-cp-1-stack--BuildArtifact::template.json'
+            TemplatePath: 'as-cp-1-stack--BuildArtifact::template.yml'
+          OutputArtifacts: []
+          InputArtifacts:
+          - Name: as-cp-1-stack-BuildArtifact
 
   FrontendCodePipeline:
     Type: AWS::CodePipeline::Pipeline
