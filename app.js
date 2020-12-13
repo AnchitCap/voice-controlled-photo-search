@@ -100,7 +100,7 @@ function previewFile(input) {
 
         var params = {
             "key": name,
-            "bucket": "voicealbumb2",
+            "bucket": "a3-b2-jars",
             "Content-Type": "image/jpg;base64"
 
         };
