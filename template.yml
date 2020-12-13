@@ -29,3 +29,13 @@ Resources:
        Handler: LF2-search.lambda_handler
        Runtime: python3.8
        CodeUri: ./src
+  LexBotFulfillment:
+     Type: AWS::Serverless::Function
+     Properties:
+       Role: arn:aws:iam::456240511584:role/A3-lambda-admin
+       FunctionName: Lexbot-fulfillment-cloudformation
+       MemorySize: 128
+       Timeout: 30
+       Handler: lexbot-fulfillment.lambda_handler
+       Runtime: python3.8
+       CodeUri: ./src
