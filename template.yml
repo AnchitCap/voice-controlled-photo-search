@@ -2,13 +2,6 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Python file including external library
 Resources:
-  SampleFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: index.handler
-      Runtime: python3.8
-      FunctionName: SamplePython
-      CodeUri: ./src #Directory the source file is
   LF1:
     Type: AWS::Serverless::Function
     Properties:
@@ -20,22 +13,22 @@ Resources:
       Runtime: python3.8
       CodeUri: ./src
   LF2:
-     Type: AWS::Serverless::Function
-     Properties:
-       Role: arn:aws:iam::456240511584:role/A3-lambda-admin
-       FunctionName: LF2-cloudformation-test
-       MemorySize: 128
-       Timeout: 30
-       Handler: LF2-search.lambda_handler
-       Runtime: python3.8
-       CodeUri: ./src
-   LexBotFulfillment:
-     Type: AWS::Serverless::Function
-     Properties:
-       Role: arn:aws:iam::456240511584:role/A3-lambda-admin
-       FunctionName: Lexbot-fulfillment-cloudformation
-       MemorySize: 128
-       Timeout: 30
-       Handler: lexbot-fulfillment.handler
-       Runtime: nodejs12.x
-       CodeUri: ./src/lexbot
+    Type: AWS::Serverless::Function
+    Properties:
+      Role: arn:aws:iam::456240511584:role/A3-lambda-admin
+      FunctionName: LF2-cloudformation-test
+      MemorySize: 128
+      Timeout: 30
+      Handler: LF2-search.lambda_handler
+      Runtime: python3.8
+      CodeUri: ./src
+  LexBotFulfillment:
+    Type: AWS::Serverless::Function
+    Properties:
+      Role: arn:aws:iam::456240511584:role/A3-lambda-admin
+      FunctionName: Lexbot-fulfillment-cloudformation
+      MemorySize: 128
+      Timeout: 30
+      Handler: lexbot-fulfillment.handler
+      Runtime: nodejs12.x
+      CodeUri: ./src/lexbot
