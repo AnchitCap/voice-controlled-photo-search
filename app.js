@@ -66,7 +66,6 @@ function showImages(res) {
 }
 
 const realFileBtn = document.getElementById("realfile");
-console.log(realFileBtn);
 
 function upload() {
     realFileBtn.click();
@@ -76,7 +75,9 @@ function previewFile(input) {
 
     var reader = new FileReader();
     name = input.files[0].name;
+    var type = input.files[0].type;
     console.log(name);
+    console.log(type);
     fileExt = name.split(".").pop();
     var onlyname = name.replace(/\.[^/.]+$/, "");
     var finalName = onlyname + "_" + Date.now() + "." + fileExt;
@@ -101,12 +102,14 @@ function previewFile(input) {
         var params = {
             "key": name,
             "bucket": "a3-b2-jars",
-            "Content-Type": "image/jpg;base64"
+            "Content-Type": type + ";base64"
 
         };
 
         var additionalParams = {
-            headers: {}
+            headers: {
+                "Content-Type": type + ";base64"
+            }
         };
         console.log(encodedStr);
         apigClient.uploadBucketKeyPut(params, encodedStr, additionalParams)
