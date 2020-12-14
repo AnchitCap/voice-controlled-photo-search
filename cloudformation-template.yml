@@ -9,8 +9,6 @@ Resources:
       BucketName: f2020-a3-static-website-host-bucket
       WebsiteConfiguration:
         IndexDocument: index.html
-      # LoggingConfiguration: 
-      #   DestinationBucketName: codepipeline-cloudtrail-placeholder-bucket-us-east-1
       VersioningConfiguration: 
         Status: Enabled
     
@@ -57,10 +55,7 @@ Resources:
 
   APIStage:
     Type: AWS::ApiGateway::Stage
-    Properties: 
-      # AccessLogSetting: 
-      #   DestinationArn: arn:aws:logs:us-east-1:178190676612:log-group:acc
-      #   Format: $context.identity.sourceIp $context.identity.caller $context.identity.user [$context.requestTime] "$context.httpMethod $context.resourcePath $context.protocol" $context.status $context.responseLength $context.requestId
+    Properties:
       RestApiId: !Ref RestApi
       StageName: v1
 
@@ -344,22 +339,6 @@ Resources:
                 Extract: true
               InputArtifacts:
                 - Name: SourceArtifact
-        # -
-        #   Name: Deploy
-        #   Actions: 
-        #     - 
-        #       Name: DeployAction
-        #       ActionTypeId: 
-        #         Category: Build 
-        #         Owner: AWS 
-        #         Version: 1 
-        #         Provider: CodeDeploy
-        #       InputArtifacts:
-        #         -
-        #           Name: SourceArtifact
-        #       Configuration:
-        #         ApplicationName: PhotoAlbum
-        #         DeploymentGroupName: MyDemoDeploymentGroup
 
         
 
