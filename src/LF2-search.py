@@ -47,11 +47,15 @@ def lambda_handler(event, context):
         userId='test',
         inputText= queryString
     )
-    message = response['message']
+    #message = response['message']
     try:
-        temp_keywords = message.split(',')
-        for entry in temp_keywords:
-            keywords.append(entry.split(':')[1].strip())
+        #temp_keywords = message.split(',')
+        #for entry in temp_keywords:
+            #keywords.append(entry.split(':')[1].strip())
+        slots = response['slots']
+        keywords.append(slots['FirstKeyword'])
+        keywords.append(slots['SecondKeyword'])
+        logger.info(keywords)
     except Exception as e:
         print(e)
         body = {'Responses':[]}
@@ -68,7 +72,7 @@ def lambda_handler(event, context):
     logger.info(keywords)
     body = {'Responses':[]}
     for item in keywords:
-        if (item == 'null'):
+        if (item == None):
             continue
         res = search_photo(item)
         parsed_res = json.loads(res)
