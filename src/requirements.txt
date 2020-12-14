@@ -1,4 +1,3 @@
-json
 requests_aws4auth
 requests
 os
