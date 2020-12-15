@@ -232,18 +232,18 @@ Resources:
   #  Properties:  
   #    DomainName: photos
   
-  CodeBuildProject:
-    Type: AWS::CodeBuild::Project
-    Properties: 
-      Artifacts: 
-        Type: CODEPIPELINE
-      Environment: 
-        ComputeType: BUILD_GENERAL1_SMALL
-        Image: registry/repository:aws/codebuild/aws/codebuild/standard:4.0
-        Type: LINUX_GPU_CONTAINER
-      Name: a3-cloud-build-lf-project
-      QueuedTimeoutInMinutes: 480
-      ServiceRole: arn:aws:iam::456240511584:role/service-role/a3-codebuild-cloud-build-lf-project-service-role
-      Source: 
-        Type: CODEPIPELINE
-      TimeoutInMinutes: 60
+  #CodeBuildProject:
+  #  Type: AWS::CodeBuild::Project
+  #  Properties: 
+  #    Artifacts: 
+  #      Type: CODEPIPELINE
+  #    Environment: 
+  #      ComputeType: BUILD_GENERAL1_SMALL
+  #      Image: registry/repository:aws/codebuild/aws/codebuild/standard:4.0
+  #      Type: LINUX_GPU_CONTAINER
+  #    Name: a3-cloud-build-lf-project
+  #    QueuedTimeoutInMinutes: 480
+  #    ServiceRole: arn:aws:iam::456240511584:role/service-role/a3-codebuild-cloud-build-lf-project-service-role
+  #    Source: 
+  #      Type: CODEPIPELINE
+  #    TimeoutInMinutes: 60
