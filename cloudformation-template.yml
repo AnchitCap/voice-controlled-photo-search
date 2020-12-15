@@ -53,20 +53,6 @@ Resources:
       Name: Cloud A3 - Voice Controlled Photo Search
       Description: Voice Controlled Photo Search
 
-  Deployment: 
-    Type: AWS::ApiGateway::Deployment
-    Properties: 
-      RestApiId: !Ref RestApi
-      Description: "My deployment"
-      StageName: "test-api-1"
-
-  APIStage:
-    Type: AWS::ApiGateway::Stage
-    Properties:
-      RestApiId: !Ref RestApi
-      StageName: v1
-      DeploymentId: !Ref Deployment
-
   Photo:
     Type: AWS::ApiGateway::Model
     Properties:
@@ -218,6 +204,27 @@ Resources:
       AuthorizationType: "NONE"
       ResourceId: !Ref key
       RestApiId: !Ref RestApi
+
+  Deployment: 
+    Type: AWS::ApiGateway::Deployment
+    Properties: 
+      RestApiId: !Ref RestApi
+      Description: "My deployment"
+      StageName: "test"
+    DependsOn:
+      - searchmethod
+      - uploadmethod
+
+  APIStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      RestApiId: !Ref RestApi
+      StageName: v1
+      DeploymentId: !Ref Deployment
+    DependsOn:
+      - searchmethod
+      - uploadmethod
+      - Deployment
 
   ElasticSearch:
     Type: AWS::Elasticsearch::Domain
