@@ -1,56 +1,57 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: A template for voice controlled photo album app
 Resources:
-  S3Bucket:
-    Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
-    Properties: 
-      AccessControl: PublicRead
-      BucketName: f2020-a3-static-website-host-bucket
-      WebsiteConfiguration:
-        IndexDocument: index.html
-      VersioningConfiguration: 
-        Status: Enabled
+  #S3Bucket:
+  #  Type: AWS::S3::Bucket
+  #  DeletionPolicy: Retain
+  #  Properties: 
+  #    AccessControl: PublicRead
+  #    BucketName: f2020-a3-static-website-host-bucket-test
+  #    WebsiteConfiguration:
+  #      IndexDocument: index.html
+  #    VersioningConfiguration: 
+  #      Status: Enabled
     
-  S3Bucketphotos:
-    Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
-    Properties: 
-      AccessControl: PublicRead
-      BucketName: a3-b2-jars
+  #S3Bucketphotos:
+  #  Type: AWS::S3::Bucket
+  #  DeletionPolicy: Retain
+  #  Properties: 
+  #    AccessControl: PublicRead
+  #    BucketName: a3-b2-jars
 
-  S3Bucketcodepipeline:
-    Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
-    Properties: 
-      AccessControl: PublicRead
-      BucketName: codepipeline-us-east-2-238322395553
+  #S3Bucketcodepipeline:
+  #  Type: AWS::S3::Bucket
+  #  DeletionPolicy: Retain
+  #  Properties: 
+  #    AccessControl: PublicRead
+  #    #BucketName: codepipeline-us-east-2-238322395553
+  #    BucketName: codepipeline-us-east-1-441414766425
 
-  PhotobucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties: 
-      Bucket: photos-s3-bucket
-      PolicyDocument: {
-        "Version": "2012-10-17",
-        "Id": "Policy1607802088415",
-        "Statement": [
-         {
-            "Sid": "Stmt1607809157926",
-            "Effect": "Allow",
-            "Principal": "*",
-            "Action": [
-                "s3:GetObject",
-                "s3:PutObject"
-            ],
-            "Resource": "arn:aws:s3:::a3-b2-jars/*"
-          }
-        ]
-      }
+  #PhotobucketPolicy:
+  #  Type: AWS::S3::BucketPolicy
+  #  Properties: 
+  #    Bucket: photos-s3-bucket
+  #    PolicyDocument: {
+  #      "Version": "2012-10-17",
+  #      "Id": "Policy1607802088415",
+  #      "Statement": [
+  #       {
+  #          "Sid": "Stmt1607809157926",
+  #          "Effect": "Allow",
+  #          "Principal": "*",
+  #          "Action": [
+  #              "s3:GetObject",
+  #              "s3:PutObject"
+  #          ],
+  #          "Resource": "arn:aws:s3:::a3-b2-jars/*"
+  #        }
+  #      ]
+  #    }
 
   RestApi:
     Type: AWS::ApiGateway::RestApi
     Properties:
-      Name: Cloud A3 - Voice Controlled Photo Search
+      Name: Cloud A3 - Voice Controlled Photo Search - pipelinetest
       Description: Voice Controlled Photo Search
 
   Photo:
@@ -226,10 +227,10 @@ Resources:
       - uploadmethod
       - Deployment
 
-  ElasticSearch:
-    Type: AWS::Elasticsearch::Domain
-    Properties:  
-      DomainName: photos
+  #ElasticSearch:
+  #  Type: AWS::Elasticsearch::Domain
+  #  Properties:  
+  #    DomainName: photos
   
   CodeBuildProject:
     Type: AWS::CodeBuild::Project
@@ -240,7 +241,7 @@ Resources:
         ComputeType: BUILD_GENERAL1_SMALL
         Image: registry/repository:aws/codebuild/aws/codebuild/standard:4.0
         Type: LINUX_GPU_CONTAINER
-      Name: a3-cloud-build-lf-project 
+      Name: a3-cloud-build-lf-project-test
       QueuedTimeoutInMinutes: 480
       ServiceRole: arn:aws:iam::456240511584:role/service-role/a3-codebuild-cloud-build-lf-project-service-role
       Source: 
@@ -313,7 +314,7 @@ Resources:
                 ChangeSetName: as-cp-1-set
                 #ParameterOverrides: '{"ProjectId": "my-project","CodeDeployRole": "CodeDeploy_Role_ARN"}'
                 RoleArn: arn:aws:iam::456240511584:role/a3-cloud-formation-role
-                StackName: as-cp-1-stack
+                StackName: as-cp-1-stack-pipetest
                 #TemplateConfiguration: 'as-cp-1-stack--BuildArtifact::template.json'
                 TemplatePath: 'as-cp-1-stack--BuildArtifact::template.yml'
               OutputArtifacts: []
@@ -330,7 +331,7 @@ Resources:
               Configuration:
                 ActionMode: CHANGE_SET_EXECUTE
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
-                ChangeSetName: as-cp-1-set
+                ChangeSetName: as-cp-1-set-test
                 #ParameterOverrides: '{"ProjectId": "my-project","CodeDeployRole": "CodeDeploy_Role_ARN"}'
                 RoleArn: arn:aws:iam::456240511584:role/a3-cloud-formation-role
                 StackName: as-cp-1-stack
