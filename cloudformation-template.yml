@@ -1,16 +1,16 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: A template for voice controlled photo album app
 Resources:
-  S3Bucket:
-    Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
-    Properties: 
-      AccessControl: PublicRead
-      BucketName: f2020-a3-static-website-host-bucket-test
-      WebsiteConfiguration:
-        IndexDocument: index.html
-      VersioningConfiguration: 
-        Status: Enabled
+  #S3Bucket:
+  #  Type: AWS::S3::Bucket
+  #  DeletionPolicy: Retain
+  #  Properties: 
+  #    AccessControl: PublicRead
+  #    BucketName: f2020-a3-static-website-host-bucket-test
+  #    WebsiteConfiguration:
+  #      IndexDocument: index.html
+  #    VersioningConfiguration: 
+  #      Status: Enabled
     
   #S3Bucketphotos:
   #  Type: AWS::S3::Bucket
@@ -227,29 +227,29 @@ Resources:
       - uploadmethod
       - Deployment
 
-  ElasticSearch:
-    Type: AWS::Elasticsearch::Domain
-    Properties:  
-      DomainName: photos-cftest
-      AccessPolicies:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: "Allow"
-            Principal:
-              AWS: "*"
-            Action: "es:*"
-            Resource: "Resource": "arn:aws:es:us-east-1:456240511584:domain/photos-cftest/*"
-      ElasticsearchClusterConfig:
-        DedicatedMasterEnabled: "false"
-        InstanceCount: "1"
-        ZoneAwarenessEnabled: "false"
-        InstanceType: "t2.small.elasticsearch"
-      EBSOptions:
-        EBSEnabled: true
-        Iops: 0
-        VolumeSize: 10
-        VolumeType: "gp2"
-      ElasticsearchVersion: "7.9"
+  #ElasticSearch:
+  #  Type: AWS::Elasticsearch::Domain
+  #  Properties:  
+  #    DomainName: photos-cftest
+  #    AccessPolicies:
+  #      Version: "2012-10-17"
+  #      Statement:
+  #        - Effect: "Allow"
+  #          Principal:
+  #            AWS: "*"
+  #          Action: "es:*"
+  #          Resource: "arn:aws:es:us-east-1:456240511584:domain/photos-cftest/*"
+  #    ElasticsearchClusterConfig:
+  #      DedicatedMasterEnabled: "false"
+  #      InstanceCount: "1"
+  #      ZoneAwarenessEnabled: "false"
+  #      InstanceType: "t2.small.elasticsearch"
+  #    EBSOptions:
+  #      EBSEnabled: true
+  #      Iops: 0
+  #      VolumeSize: 10
+  #      VolumeType: "gp2"
+  #    ElasticsearchVersion: "7.9"
   
   FrontEndPipeline:
     Type: AWS::CodePipeline::Pipeline
@@ -257,6 +257,7 @@ Resources:
       ArtifactStore: 
         Location: codepipeline-us-east-1-441414766425
         Type: S3
+      RoleArn: arn:aws:iam::456240511584:role/service-role/AWSCodePipelineServiceRole-us-east-1-f2020-a3-pipeline-1
       Stages: 
         - Name: Source 
           Actions: 
@@ -272,10 +273,10 @@ Resources:
                 Repo: voice-controlled-photo-search
                 #Branch: main
                 Branch: test
-                #OAuthToken: 514b8a54386fd3ad7b20a54c7f097d9030079c05
+                OAuthToken: 514b8a54386fd3ad7b20a54c7f097d9030079c05
               OutputArtifacts:
                 - Name: SourceArtifact
-              RunOrder: 1
+              #RunOrder: 1
         - Name: Deploy
           Actions:
             - Name: Deploy
@@ -289,7 +290,7 @@ Resources:
                 Extract: True
               InputArtifacts:
                 - Name: SourceArtifact
-              RunOrder: 1
+              #RunOrder: 1
   
   LambdaCodePipeline:
     Type: AWS::CodePipeline::Pipeline
@@ -316,10 +317,10 @@ Resources:
                 Repo: voice-controlled-photo-search
                 #Branch: main
                 Branch: test
-                #OAuthToken: 514b8a54386fd3ad7b20a54c7f097d9030079c05
+                OAuthToken: 514b8a54386fd3ad7b20a54c7f097d9030079c05
               OutputArtifacts:
                 - Name: SourceArtifact
-              RunOrder: 1
+              #RunOrder: 1
         - Name: Build
           Actions: 
             #- Name: BuildAction
@@ -329,11 +330,13 @@ Resources:
                 Owner: AWS 
                 Version: 1 
                 Provider: CodeBuild
+              Configuration:
+                ProjectName: 'lambdas-pipeline-build'
               InputArtifacts:
                 - Name: SourceArtifact
               OutputArtifacts: 
                 - Name: BuildArtifact
-              RunOrder: 1
+              #RunOrder: 1
         - Name: Deploy
           Actions:
             #- Name: CreateOrUpdateSet
@@ -343,7 +346,7 @@ Resources:
                 Owner: AWS
                 Provider: CloudFormation
                 Version: '1'
-                RunOrder: 1
+                #RunOrder: 1
               Configuration:
                 ActionMode: CHANGE_SET_REPLACE 
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
