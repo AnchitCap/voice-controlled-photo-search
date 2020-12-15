@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: A template for voice controlled photo album app
 Resources:
-  #testing codepipeline
+  #testing codepipeline 2
 
   #S3Bucket:
   #  Type: AWS::S3::Bucket
