@@ -19,13 +19,13 @@ Resources:
   #    AccessControl: PublicRead
   #    BucketName: a3-b2-jars
 
-  S3Bucketcodepipeline:
-    Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
-    Properties: 
-      AccessControl: PublicRead
+  #S3Bucketcodepipeline:
+  #  Type: AWS::S3::Bucket
+  #  DeletionPolicy: Retain
+  #  Properties: 
+  #    AccessControl: PublicRead
   #    #BucketName: codepipeline-us-east-2-238322395553
-      BucketName: codepipeline-us-east-1-441414766425
+  #    BucketName: codepipeline-us-east-1-441414766425
 
   #PhotobucketPolicy:
   #  Type: AWS::S3::BucketPolicy
@@ -251,7 +251,7 @@ Resources:
   LambdaCodePipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties: 
-      Name: f2020-a3-pipeline-1-test
+      #Name: f2020-a3-pipeline-1-test
       ArtifactStore: 
         #Location: codepipeline-us-east-2-238322395553
         Location: codepipeline-us-east-1-441414766425
@@ -259,11 +259,10 @@ Resources:
       RestartExecutionOnUpdate: True
       RoleArn: arn:aws:iam::456240511584:role/service-role/AWSCodePipelineServiceRole-us-east-1-f2020-a3-pipeline-1
       Stages: 
-        - 
-          Name: Source 
+        - Name: Source 
           Actions: 
-            - 
-              Name: SourceAction
+            #- Name: SourceAction
+            - Name: Source
               ActionTypeId: 
                 Category: Source 
                 Owner: ThirdParty 
@@ -276,31 +275,26 @@ Resources:
                 Branch: test
                 #OAuthToken: 514b8a54386fd3ad7b20a54c7f097d9030079c05
               OutputArtifacts:
-                -                
-                  Name: SourceArtifact
+                - Name: SourceArtifact
               RunOrder: 1
-        -
-          Name: Build
+        - Name: Build
           Actions: 
-            - 
-              Name: BuildAction
+            #- Name: BuildAction
+            - Name: Build
               ActionTypeId: 
                 Category: Build 
                 Owner: AWS 
                 Version: 1 
                 Provider: CodeBuild
               InputArtifacts:
-                -
-                  Name: SourceArtifact
+                - Name: SourceArtifact
               OutputArtifacts: 
-                -
-                  Name: BuildArtifact
-              RunOrder: 1   
-
-          Name: Deploy
+                - Name: BuildArtifact
+              RunOrder: 1
+        - Name: Deploy
           Actions:
-            -          
-              Name: CreateOrUpdateSet
+            #- Name: CreateOrUpdateSet
+            - Name: Deploy
               ActionTypeId:
                 Category: Deploy
                 Owner: AWS
@@ -310,12 +304,14 @@ Resources:
               Configuration:
                 ActionMode: CHANGE_SET_REPLACE 
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
-                ChangeSetName: as-cp-1-set
+                ChangeSetName: as-cp-1-cftest-changeset
                 #ParameterOverrides: '{"ProjectId": "my-project","CodeDeployRole": "CodeDeploy_Role_ARN"}'
                 RoleArn: arn:aws:iam::456240511584:role/a3-cloud-formation-role
                 StackName: as-cp-1-stack-cftest
                 #TemplateConfiguration: 'as-cp-1-stack--BuildArtifact::template.json'
-                TemplatePath: 'as-cp-1-stack--BuildArtifact::template.yml'
+                #TemplatePath: 'as-cp-1-stack--BuildArtifact::template.yml'
+                TemplatePath: 'BuildArtifact::outputtemplate.yml'
               OutputArtifacts: []
               InputArtifacts:
-              - Name: as-cp-1-stack-BuildArtifact
+                #- Name: as-cp-1-stack-BuildArtifact
+                - Name: BuildArtifact

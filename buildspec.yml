@@ -2,14 +2,15 @@ version: 0.2
 phases:
  install:
   runtime-versions:
-   python: 3.8
+    python: 3.8
  build: 
   commands:
-   - sam build
-   - export BUCKET=f2020-a3-artifacts-2-bucket
-   - sam package --s3-bucket $BUCKET --region us-east-1 --output-template-file outputtemplate.yml --debug
+    #- sam build
+    - export BUCKET=f2020-a3-artifacts-2-bucket
+    #- sam package --s3-bucket $BUCKET --region us-east-1 --output-template-file outputtemplate.yml --debug
+    - aws cloudformation package --template-file template.yml --s3-bucket $BUCKET --output-template-file outputtemplate.yml
 artifacts:
- type: zip
- files:
-  - template.yml
-  - outputtemplate.yml
+  type: zip
+  files:
+    - template.yml
+    - outputtemplate.yml
