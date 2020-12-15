@@ -2,10 +2,6 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: SAM Build template 
 Resources:
-  photoBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: a3-b2-jars-cftest
   LF1:
     Type: AWS::Serverless::Function
     Properties:
