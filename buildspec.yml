@@ -7,7 +7,7 @@ phases:
   commands:
    - sam build
    - export BUCKET=f2020-a3-artifacts-1-bucket
-   - sam package --s3-bucket $BUCKET --region us-east-1 --output-template-file outputtemplate.yml --debug
+   - sam package --s3-bucket $BUCKET --region us-east-1 --output-template-file outputtemplate.yml 
 artifacts:
  type: zip
  files:
