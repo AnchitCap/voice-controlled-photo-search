@@ -1,57 +1,35 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: A template for voice controlled photo album app
+Description: A CloudFormation template for voice controlled photo album app
 Resources:
-  #S3Bucket:
-  #  Type: AWS::S3::Bucket
-  #  DeletionPolicy: Retain
-  #  Properties: 
-  #    AccessControl: PublicRead
-  #    BucketName: f2020-a3-static-website-host-bucket-test
-  #    WebsiteConfiguration:
-  #      IndexDocument: index.html
-  #    VersioningConfiguration: 
-  #      Status: Enabled
+  FrontEndBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties: 
+      AccessControl: PublicRead
+      #BucketName: f2020-a3-static-website-host-bucket
+      WebsiteConfiguration:
+        IndexDocument: index.html
+      VersioningConfiguration: 
+        Status: Enabled
     
-  #S3Bucketphotos:
-  #  Type: AWS::S3::Bucket
-  #  DeletionPolicy: Retain
-  #  Properties: 
-  #    AccessControl: PublicRead
-  #    BucketName: a3-b2-jars-cftest
+  PhotoBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties: 
+      AccessControl: PublicRead
+      #BucketName: a3-b2-jars
 
-  #S3Bucketcodepipeline:
-  #  Type: AWS::S3::Bucket
-  #  DeletionPolicy: Retain
-  #  Properties: 
-  #    AccessControl: PublicRead
-  #    #BucketName: codepipeline-us-east-2-238322395553
-  #    BucketName: codepipeline-us-east-1-441414766425
-
-  #PhotobucketPolicy:
-  #  Type: AWS::S3::BucketPolicy
-  #  Properties: 
-  #    Bucket: photos-s3-bucket
-  #    PolicyDocument: {
-  #      "Version": "2012-10-17",
-  #      "Id": "Policy1607802088415",
-  #      "Statement": [
-  #       {
-  #          "Sid": "Stmt1607809157926",
-  #          "Effect": "Allow",
-  #          "Principal": "*",
-  #          "Action": [
-  #              "s3:GetObject",
-  #              "s3:PutObject"
-  #          ],
-  #          "Resource": "arn:aws:s3:::a3-b2-jars/*"
-  #        }
-  #      ]
-  #    }
+  CodePipelineBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties: 
+      AccessControl: PublicRead
+      #BucketName: codepipeline-us-east-1-441414766425
 
   RestApi:
     Type: AWS::ApiGateway::RestApi
     Properties:
-      Name: Cloud A3 - Voice Controlled Photo Search - pipelinetest
+      Name: Cloud A3 - Voice Controlled Photo Search-cftest
       Description: Voice Controlled Photo Search
 
   Photo:
@@ -83,31 +61,6 @@ Resources:
         properties:
           results:
             type: array
-            #items: !Ref Photo
-        
-  #Error:
-  #  Type: AWS::ApiGateway::Model
-  #  Properties: 
-  #    ContentType: objcet
-  #    Description: Error model
-  #    Name: Error
-  #    RestApiId: !Ref RestApi
-  #    Schema: 
-  #      code:
-  #        type: integer
-  #        format: int32
-  #      message:
-  #        type: string 
-
-  #SearchParameter:
-  #  Type: AWS::ApiGateway::Model
-  #  Properties: 
-  #    ContentType: objcet
-  #    Description: SearchParameter model
-  #    Name: q
-  #    RestApiId: !Ref RestApi
-  #    Schema: 
-  #      type: string
 
   search:
     Type: 'AWS::ApiGateway::Resource'
@@ -226,57 +179,31 @@ Resources:
       - searchmethod
       - uploadmethod
       - Deployment
-
-  #ElasticSearch:
-  #  Type: AWS::Elasticsearch::Domain
-  #  Properties:  
-  #    DomainName: photos-cftest
-  #    AccessPolicies:
-  #      Version: "2012-10-17"
-  #      Statement:
-  #        - Effect: "Allow"
-  #          Principal:
-  #            AWS: "*"
-  #          Action: "es:*"
-  #          Resource: "arn:aws:es:us-east-1:456240511584:domain/photos-cftest/*"
-  #    ElasticsearchClusterConfig:
-  #      DedicatedMasterEnabled: "false"
-  #      InstanceCount: "1"
-  #      ZoneAwarenessEnabled: "false"
-  #      InstanceType: "t2.small.elasticsearch"
-  #    EBSOptions:
-  #      EBSEnabled: true
-  #      Iops: 0
-  #      VolumeSize: 10
-  #      VolumeType: "gp2"
-  #    ElasticsearchVersion: "7.9"
   
   FrontEndPipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties: 
       ArtifactStore: 
-        Location: codepipeline-us-east-1-441414766425
+        Location: !Ref CodePipelineBucket
         Type: S3
       RoleArn: arn:aws:iam::456240511584:role/service-role/AWSCodePipelineServiceRole-us-east-1-f2020-a3-pipeline-1
       Stages: 
         - Name: Source 
           Actions: 
-            #- Name: SourceAction
             - Name: Source
               ActionTypeId: 
                 Category: Source 
                 Owner: ThirdParty 
-                Version: 1 
+                Version: 1
                 Provider: GitHub
               Configuration:
                 Owner: AnchitCap
                 Repo: voice-controlled-photo-search
-                #Branch: main
-                Branch: test
-                OAuthToken: 514b8a54386fd3ad7b20a54c7f097d9030079c05
+                Branch: front-end
+                #OAuthToken: 514b8a54386fd3ad7b20a54c7f097d9030079c05
+                OAuthToken: ee7afcbc1804b72d20788aa7915be9a4f66debb0
               OutputArtifacts:
                 - Name: SourceArtifact
-              #RunOrder: 1
         - Name: Deploy
           Actions:
             - Name: Deploy
@@ -284,80 +211,98 @@ Resources:
                 Category: Deploy
                 Owner: AWS
                 Provider: S3
-                Version: '1'
+                Version: 1
               Configuration:
-                BucketName: f2020-a3-static-website-host-bucket-test 
+                #BucketName: f2020-a3-static-website-host-bucket
+                BucketName: !Ref FrontEndBucket
                 Extract: True
               InputArtifacts:
                 - Name: SourceArtifact
-              #RunOrder: 1
   
   LambdaCodePipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties: 
-      #Name: f2020-a3-pipeline-1-test
+      #Name: f2020-a3-pipeline-1
       ArtifactStore: 
-        #Location: codepipeline-us-east-2-238322395553
-        Location: codepipeline-us-east-1-441414766425
+        Location: !Ref CodePipelineBucket
         Type: S3
       RestartExecutionOnUpdate: True
       RoleArn: arn:aws:iam::456240511584:role/service-role/AWSCodePipelineServiceRole-us-east-1-f2020-a3-pipeline-1
       Stages: 
         - Name: Source 
           Actions: 
-            #- Name: SourceAction
             - Name: Source
               ActionTypeId: 
                 Category: Source 
                 Owner: ThirdParty 
-                Version: 1 
+                Version: 1
                 Provider: GitHub
               Configuration:
                 Owner: AnchitCap
                 Repo: voice-controlled-photo-search
                 #Branch: main
                 Branch: test
-                OAuthToken: 514b8a54386fd3ad7b20a54c7f097d9030079c05
+                #OAuthToken: 514b8a54386fd3ad7b20a54c7f097d9030079c05
+                OAuthToken: ee7afcbc1804b72d20788aa7915be9a4f66debb0
               OutputArtifacts:
                 - Name: SourceArtifact
-              #RunOrder: 1
         - Name: Build
           Actions: 
-            #- Name: BuildAction
             - Name: Build
               ActionTypeId: 
                 Category: Build 
                 Owner: AWS 
-                Version: 1 
+                Version: 1
                 Provider: CodeBuild
               Configuration:
-                ProjectName: 'lambdas-pipeline-build'
+                ProjectName: 'A3-SAM-Build-Project'
               InputArtifacts:
                 - Name: SourceArtifact
               OutputArtifacts: 
                 - Name: BuildArtifact
-              #RunOrder: 1
         - Name: Deploy
           Actions:
-            #- Name: CreateOrUpdateSet
             - Name: Deploy
               ActionTypeId:
                 Category: Deploy
                 Owner: AWS
                 Provider: CloudFormation
-                Version: '1'
-                #RunOrder: 1
+                Version: 1
               Configuration:
                 ActionMode: CHANGE_SET_REPLACE 
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
-                ChangeSetName: as-cp-1-cftest-changeset
-                #ParameterOverrides: '{"ProjectId": "my-project","CodeDeployRole": "CodeDeploy_Role_ARN"}'
+                ChangeSetName: !Sub '${AWS::StackName}-changeset'
                 RoleArn: arn:aws:iam::456240511584:role/a3-cloud-formation-role
-                StackName: as-cp-1-stack-cftest
-                #TemplateConfiguration: 'as-cp-1-stack--BuildArtifact::template.json'
-                #TemplatePath: 'as-cp-1-stack--BuildArtifact::template.yml'
+                StackName: !Ref "AWS::StackName"
                 TemplatePath: 'BuildArtifact::outputtemplate.yml'
               OutputArtifacts: []
               InputArtifacts:
-                #- Name: as-cp-1-stack-BuildArtifact
                 - Name: BuildArtifact
+
+  # ElasticSearch:
+  #   Type: AWS::Elasticsearch::Domain
+  #   Properties:  
+  #     DomainName: photos
+  #     AccessPolicies:
+  #       Version: "2012-10-17"
+  #       Statement:
+  #         - Effect: "Allow"
+  #           Principal:
+  #             AWS: 
+  #               - "arn:aws:iam::456240511584:user/jak"
+  #               - "arn:aws:iam::456240511584:user/anchit"
+  #               - "arn:aws:iam::456240511584:user/ronak"
+  #               - "arn:aws:iam::456240511584:user/shawn"
+  #           Action: "es:*"
+  #           Resource: "arn:aws:es:us-east-1:456240511584:domain/photos-cftest2/*"
+  #     ElasticsearchClusterConfig:
+  #       DedicatedMasterEnabled: "false"
+  #       InstanceCount: "1"
+  #       ZoneAwarenessEnabled: "false"
+  #       InstanceType: "t2.small.elasticsearch"
+  #     EBSOptions:
+  #       EBSEnabled: true
+  #       Iops: 0
+  #       VolumeSize: 10
+  #       VolumeType: "gp2"
+  #     ElasticsearchVersion: "7.9"

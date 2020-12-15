@@ -21,7 +21,7 @@ Resources:
           Type: S3
           Properties:
             Bucket: !Ref photoBucket
-            Events: s3:ObjectCreated:Put
+            Events: s3:ObjectCreated:*
   LF2:
     Type: AWS::Serverless::Function
     Properties:
