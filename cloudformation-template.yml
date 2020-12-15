@@ -53,134 +53,171 @@ Resources:
       Name: Cloud A3 - Voice Controlled Photo Search
       Description: Voice Controlled Photo Search
 
+  Deployment: 
+    Type: AWS::ApiGateway::Deployment
+    Properties: 
+      RestApiId: !Ref RestApi
+      Description: "My deployment"
+      StageName: "test-api-1"
+
   APIStage:
     Type: AWS::ApiGateway::Stage
     Properties:
       RestApiId: !Ref RestApi
       StageName: v1
+      DeploymentId: !Ref Deployment
 
   Photo:
     Type: AWS::ApiGateway::Model
-    Properties: 
-      ContentType: objcet
+    Properties:
+      RestApiId: !Ref RestApi
+      ContentType: application/json
       Description: Photo model
       Name: Photo
-      RestApiId: !Ref RestApi
-      Schema: 
-        url:
-          type: string
-        labels:
-          type: array
-          items:
+      Schema:
+        type: object
+        properties:
+          url:
             type: string
+          labels:
+            type: array
+            items:
+              type: string
 
   SearchResponse:
     Type: AWS::ApiGateway::Model
     Properties: 
-      ContentType: objcet
+      ContentType: application/json
       Description: SearchResponse model
       Name: SearchResponse
       RestApiId: !Ref RestApi
-      Schema: 
-        results:
-          type: array
-          items: !Ref Photo
+      Schema:
+        type: object
+        properties:
+          results:
+            type: array
+            #items: !Ref Photo
         
-  Error:
-    Type: AWS::ApiGateway::Model
-    Properties: 
-      ContentType: objcet
-      Description: Error model
-      Name: Error
-      RestApiId: !Ref RestApi
-      Schema: 
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string 
+  #Error:
+  #  Type: AWS::ApiGateway::Model
+  #  Properties: 
+  #    ContentType: objcet
+  #    Description: Error model
+  #    Name: Error
+  #    RestApiId: !Ref RestApi
+  #    Schema: 
+  #      code:
+  #        type: integer
+  #        format: int32
+  #      message:
+  #        type: string 
 
-  SearchParameter:
-    Type: AWS::ApiGateway::Model
-    Properties: 
-      ContentType: objcet
-      Description: SearchParameter model
-      Name: q
-      RestApiId: !Ref RestApi
-      Schema: 
-        type: string
+  #SearchParameter:
+  #  Type: AWS::ApiGateway::Model
+  #  Properties: 
+  #    ContentType: objcet
+  #    Description: SearchParameter model
+  #    Name: q
+  #    RestApiId: !Ref RestApi
+  #    Schema: 
+  #      type: string
 
+  search:
+    Type: 'AWS::ApiGateway::Resource'
+    Properties:
+      RestApiId: !Ref RestApi
+      ParentId: !GetAtt 
+        - RestApi
+        - RootResourceId
+      PathPart: search
+  
   searchmethod:
     Type: AWS::ApiGateway::Method
     Properties:
       ApiKeyRequired: False
       HttpMethod: GET
       Integration:
-        IntegrationHttpMethod: "GET"
-        Type: "AWS_PROXY"
-        Uri: "arn:aws:lambda:us-east-1:456240511584:function:A3-LF2"
-      MethodResponses: 
-          - 
+        Type: AWS_PROXY
+        IntegrationHttpMethod: GET
+        Uri: "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:456240511584:function:A3-LF2/invocations"
+      MethodResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: true
             ResponseModels: 
               application/json: SearchResponse
-            StatusCode: 200
-          - 
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: true
+          - StatusCode: 403
             ResponseModels: 
               application/json: Error
-            StatusCode: 403
-          - 
+          - StatusCode: 500
             ResponseModels: 
               application/json: Error
-            StatusCode: 500
       RequestParameters: 
-        method.request.path.q: true
-      ResourceId: !GetAtt RestApi.RootResourceId
+        method.request.querystring.q: true
+      AuthorizationType: NONE
+      ResourceId: !Ref search
       RestApiId: !Ref RestApi
-      
+
+  upload:
+    Type: 'AWS::ApiGateway::Resource'
+    Properties:
+      RestApiId: !Ref RestApi
+      ParentId: !GetAtt 
+        - RestApi
+        - RootResourceId
+      PathPart: upload
+
+  bucket:
+    Type: 'AWS::ApiGateway::Resource'
+    Properties:
+      RestApiId: !Ref RestApi
+      ParentId: !Ref upload
+      PathPart: '{bucket}'
+
+  key:
+    Type: 'AWS::ApiGateway::Resource'
+    Properties:
+      RestApiId: !Ref RestApi
+      ParentId: !Ref bucket
+      PathPart: '{key}'
+
   uploadmethod:
     Type: AWS::ApiGateway::Method
     Properties:
       ApiKeyRequired: False
       HttpMethod: PUT
       Integration:
+        Credentials: arn:aws:iam::456240511584:role/A3-cf-admin
         IntegrationHttpMethod: PUT
         Type: "AWS"
-        Uri: arn:aws:apigateway:us-east-1-2:s3:action/PutObject&Bucket={bucket}&Key={key}"
+        Uri: arn:aws:apigateway:us-east-1:s3:action/PutObject&Bucket={bucket}&Key={key}"
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.X-Requested-With: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,x-requested-with'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,PUT,GET,POST'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            ResponseTemplates:
+              application/json: ''
       MethodResponses: 
-          -
-            StatusCode: 200
-          -
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.X-Requested-With: true
+              method.response.header.Access-Control-Allow-Headers: true
+              method.response.header.Access-Control-Allow-Origin: true
+              method.response.header.Access-Control-Allow-Methods: true
+          - StatusCode: 403
             ResponseModels: 
               application/json: Error
-            StatusCode: 403
-          -
+          - StatusCode: 500
             ResponseModels: 
               application/json: Error
-            StatusCode: 500
-      ResourceId: !GetAtt RestApi.RootResourceId
+      AuthorizationType: "NONE"
+      ResourceId: !Ref key
       RestApiId: !Ref RestApi
-      
-  # photoindexlambda:
-  #   Type: AWS::Lambda::Function
-  #   Properties: 
-  #     Code: 
-  #         S3Bucket: my-photo-bucket0
-  #         S3Key: Backend
-  #     FunctionName: photo-index
-  #     Handler: lambda1_index_photos.lambda_handler
-  #     Role: arn:aws:iam::178190676612:role/service-role/index-photos-role-v85kkxtk
-  #     Runtime: python3.8
-
-  # searchphotolambda:
-  #   Type: AWS::Lambda::Function
-  #   Properties: 
-  #     Code: 
-  #       S3Bucket: my-photo-bucket0
-  #       S3Key: Backend
-  #     FunctionName: search-photos
-  #     Handler: lambda2_search_photos.lambda_handler
-  #     Role: arn:aws:iam::178190676612:role/service-role/index-photos-role-v85kkxtk
-  #     Runtime: python3.8
 
   ElasticSearch:
     Type: AWS::Elasticsearch::Domain
