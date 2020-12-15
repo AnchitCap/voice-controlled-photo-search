@@ -232,21 +232,45 @@ Resources:
   #  Properties:  
   #    DomainName: photos
   
-  #CodeBuildProject:
-  #  Type: AWS::CodeBuild::Project
-  #  Properties: 
-  #    Artifacts: 
-  #      Type: CODEPIPELINE
-  #    Environment: 
-  #      ComputeType: BUILD_GENERAL1_SMALL
-  #      Image: registry/repository:aws/codebuild/aws/codebuild/standard:4.0
-  #      Type: LINUX_GPU_CONTAINER
-  #    Name: a3-cloud-build-lf-project
-  #    QueuedTimeoutInMinutes: 480
-  #    ServiceRole: arn:aws:iam::456240511584:role/service-role/a3-codebuild-cloud-build-lf-project-service-role
-  #    Source: 
-  #      Type: CODEPIPELINE
-  #    TimeoutInMinutes: 60
+  FrontEndPipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties: 
+      ArtifactStore: 
+        Location: codepipeline-us-east-1-441414766425
+        Type: S3
+      Stages: 
+        - Name: Source 
+          Actions: 
+            #- Name: SourceAction
+            - Name: Source
+              ActionTypeId: 
+                Category: Source 
+                Owner: ThirdParty 
+                Version: 1 
+                Provider: GitHub
+              Configuration:
+                Owner: AnchitCap
+                Repo: voice-controlled-photo-search
+                #Branch: main
+                Branch: test
+                #OAuthToken: 514b8a54386fd3ad7b20a54c7f097d9030079c05
+              OutputArtifacts:
+                - Name: SourceArtifact
+              RunOrder: 1
+        - Name: Deploy
+          Actions:
+            - Name: Deploy
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: S3
+                Version: '1'
+              Configuration:
+                BucketName: S3Bucket 
+                Extract: True
+              InputArtifacts:
+                - Name: SourceArtifact
+              RunOrder: 1
   
   LambdaCodePipeline:
     Type: AWS::CodePipeline::Pipeline
