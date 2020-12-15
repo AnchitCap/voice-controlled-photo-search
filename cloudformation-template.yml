@@ -250,12 +250,14 @@ Resources:
   LambdaCodePipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties: 
-      Name: f2020-a3-pipeline-1
+      Name: f2020-a3-pipeline-1-test
       ArtifactStore: 
-        Location: codepipeline-us-east-2-238322395553
+        #Location: codepipeline-us-east-2-238322395553
+        Location: codepipeline-us-east-1-441414766425
         Type: S3
       RestartExecutionOnUpdate: True
-      RoleArn: arn:aws:iam::456240511584:role/service-role/AWSCodePipelineServiceRole-us-east-2-f2020-a3-pipeline-1
+      #RoleArn: arn:aws:iam::456240511584:role/service-role/AWSCodePipelineServiceRole-us-east-2-f2020-a3-pipeline-1
+      RoleArn: arn:aws:iam::456240511584:role/service-role/AWSCodePipelineServiceRole-us-east-1-f2020-a3-pipeline-1
       Stages: 
         - 
           Name: Source 
@@ -270,7 +272,8 @@ Resources:
               Configuration:
                 Owner: AnchitCap
                 Repo: voice-controlled-photo-search
-                Branch: main
+                #Branch: main
+                Branch: test
                 #OAuthToken: 514b8a54386fd3ad7b20a54c7f097d9030079c05
               OutputArtifacts:
                 -                
@@ -340,12 +343,13 @@ Resources:
   FrontendCodePipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
-      Name: f2020-a3-code-pipeline-2
+      Name: f2020-a3-code-pipeline-2-test
       ArtifactStore: 
-        Location: codepipeline-us-east-2-238322395553
+        Location: codepipeline-us-east-1-441414766425
         Type: S3
       RestartExecutionOnUpdate: True
-      RoleArn: arn:aws:iam::456240511584:role/service-role/AWSCodePipelineServiceRole-us-east-2-f2020-a3-code-pipeline-2
+      #RoleArn: arn:aws:iam::456240511584:role/service-role/AWSCodePipelineServiceRole-us-east-2-f2020-a3-code-pipeline-2
+      RoleArn: arn:aws:iam::456240511584:role/service-role/AWSCodePipelineServiceRole-us-east-1-f2020-a3-pipeline-1
       Stages: 
         - 
           Name: Source 
@@ -379,224 +383,7 @@ Resources:
               Region: us-east-1
               Name: Source
               Configuration:
-                BucketName: f2020-a3-static-website-host-bucket
+                BucketName: f2020-a3-static-website-host-bucket-test
                 Extract: true
               InputArtifacts:
                 - Name: SourceArtifact
-
-        
-
-  # IndexPhotosRoleV85KkxtkRole:
-  #   Type: "AWS::IAM::Role"
-  #   Properties:
-  #     AssumeRolePolicyDocument:
-  #       Version: "2012-10-17"
-  #       Statement:
-  #         - Effect: "Allow"
-  #           Principal:
-  #             Service: "lambda.amazonaws.com"
-  #           Action: "sts:AssumeRole"
-  #     Path: "/service-role/"
-  #     MaxSessionDuration: 3600
-  #     RoleName: index-photos-role-v85kkxtk
-
-  # VoiceLambda2Role:
-  #   Type: "AWS::IAM::Role"
-  #   Properties:
-  #     Description: "Allows Lambda functions to call AWS services on your behalf."
-  #     AssumeRolePolicyDocument:
-  #       Version: "2012-10-17"
-  #       Statement:
-  #         - Effect: "Allow"
-  #           Principal:
-  #             Service: "lambda.amazonaws.com"
-  #           Action: "sts:AssumeRole"
-  #     Path: "/"
-  #     MaxSessionDuration: 3600
-  #     RoleName: voice_lambda2
-  
-  # AiPhotoSearchRole:
-  #   Type: "AWS::IAM::Role"
-  #   Properties:
-  #     Description: "Allows S3 to call AWS services on your behalf."
-  #     AssumeRolePolicyDocument:
-  #       Version: "2012-10-17"
-  #       Statement:
-  #         - Effect: "Allow"
-  #           Principal:
-  #             Service:
-  #               - "s3.amazonaws.com"
-  #               - "apigateway.amazonaws.com"
-  #               - "lambda.amazonaws.com"
-  #           Action: "sts:AssumeRole"
-  #     Path: "/"
-  #     MaxSessionDuration: 3600
-  #     RoleName: ai_photo_search
-
-  # CodeDeployServiceRole:
-  #   Type: "AWS::IAM::Role"
-  #   Properties:
-  #     Description: "Allows CodeDeploy to call AWS services such as Auto Scaling on your behalf."
-  #     AssumeRolePolicyDocument:
-  #       Version: "2012-10-17"
-  #       Statement:
-  #         - Sid: ""
-  #           Effect: "Allow"
-  #           Principal:
-  #             Service: "codedeploy.amazonaws.com"
-  #           Action: "sts:AssumeRole"
-  #     Path: "/"
-  #     MaxSessionDuration: 3600
-  #     RoleName: CodeDeployServiceRole
-
-  # CweRoleUsEast1PhotoAlbumFrontend:
-  #   Type: "AWS::IAM::Role"
-  #   Properties:
-  #     AssumeRolePolicyDocument:
-  #       Version: "2012-10-17"
-  #       Statement:
-  #         - Effect: "Allow"
-  #           Principal:
-  #             Service: "events.amazonaws.com"
-  #           Action: "sts:AssumeRole"
-  #     Path: "/service-role/"
-  #     MaxSessionDuration: 3600
-  #     RoleName: cwe-role-us-east-1-PhotoAlbumFrontend
-  
-  # AwsCodePipelineServiceRoleUsEast1PhotoAlbumFrontend:
-  #   Type: "AWS::IAM::Role"
-  #   Properties:
-  #     AssumeRolePolicyDocument:
-  #       Version: "2012-10-17"
-  #       Statement:
-  #         - Effect: "Allow"
-  #           Principal:
-  #             Service: "codepipeline.amazonaws.com"
-  #           Action: "sts:AssumeRole"
-  #     Path: "/service-role/"
-  #     MaxSessionDuration: 3600
-  #     RoleName: AWSCodePipelineServiceRole-us-east-1-PhotoAlbumFrontend
-  
-  # CweRoleUsEast1LambdaPipeline:
-  #   Type: "AWS::IAM::Role"
-  #   Properties:
-  #     AssumeRolePolicyDocument:
-  #       Version: "2012-10-17"
-  #       Statement:
-  #         - Effect: "Allow"
-  #           Principal:
-  #             Service: "events.amazonaws.com"
-  #           Action: "sts:AssumeRole"
-  #     Path: "/service-role/"
-  #     MaxSessionDuration: 3600
-  #     RoleName: cwe-role-us-east-1-lambda-pipeline
-
-  # CodebuildLambdaPipelineBuildServiceRole:
-  #   Type: "AWS::IAM::Role"
-  #   Properties:
-  #     AssumeRolePolicyDocument:
-  #       Version: "2012-10-17"
-  #       Statement:
-  #         - Effect: "Allow"
-  #           Principal:
-  #             Service: "codebuild.amazonaws.com"
-  #           Action: "sts:AssumeRole"
-  #     Path: "/service-role/"
-  #     MaxSessionDuration: 3600
-  #     RoleName: codebuild-lambda-pipeline-build-service-role
-
-  # CfnLambdaPipeline:
-  #   Type: "AWS::IAM::Role"
-  #   Properties:
-  #     Description: "Allows CloudFormation to create and manage AWS stacks and resources on your behalf."
-  #     AssumeRolePolicyDocument:
-  #       Version: "2012-10-17"
-  #       Statement:
-  #         - Sid: ""
-  #           Effect: "Allow"
-  #           Principal:
-  #             Service: "cloudformation.amazonaws.com"
-  #           Action: "sts:AssumeRole"
-  #     Path: "/"
-  #     MaxSessionDuration: 3600
-  #     RoleName: cfn-lambd
-  
-  # AwsCodePipelineServiceRoleUsEast1LambdaPipeline:
-  #   Type: "AWS::IAM::Role"
-  #   Properties:
-  #     AssumeRolePolicyDocument:
-  #       Version: "2012-10-17"
-  #       Statement:
-  #         - Effect: "Allow"
-  #           Principal:
-  #             Service: "codepipeline.amazonaws.com"
-  #           Action: "sts:AssumeRole"
-  #     Path: "/service-role/"
-  #     MaxSessionDuration: 3600
-  #     RoleName: AWSCodePipelineServiceRole-us-east-1-lambda-pipeline
- 
-  # CodeDeployDemoEc2InstanceProfile:
-  #   Type: "AWS::IAM::Role"
-  #   Properties:
-  #     Description: "Allows EC2 instances to call AWS services on your behalf."
-  #     AssumeRolePolicyDocument:
-  #       Version: "2012-10-17"
-  #       Statement:
-  #         - Effect: "Allow"
-  #           Principal:
-  #             Service: "ec2.amazonaws.com"
-  #           Action: "sts:AssumeRole"
-  #     Path: "/"
-  #     MaxSessionDuration: 3600
-  #     RoleName: CodeDeployDemo-EC2-Instance-Profile  
-
-  # startpipelineexecutionuseast1lambdapipeline:
-  #   Type: AWS::IAM::Policy
-  #   Properties: 
-  #     Groups: 
-  #       - String
-  #     PolicyDocument: 
-  #       Version: '2012-10-17'
-  #       Statement:
-  #         - Effect: Allow
-  #           Action:
-  #             - codepipeline:StartPipelineExecution
-  #           Resource:
-  #           - arn:aws:codepipeline:us-east-1:178190676612:lambda-pipeline
-  #     PolicyName: start-pipeline-execution-us-east-1-lambda-pipeline
-  #     Roles: 
-  #       - cwe-role-us-east-1-lambda-pipeline
-
-  # startpipelineexecutionuseast1PhotoAlbumFrontendPolicy:
-  #   Type: AWS::IAM::Policy
-  #   Properties: 
-  #     Groups: 
-  #       - String
-  #     PolicyDocument: 
-  #       Version: '2012-10-17'
-  #       Statement:
-  #         - Effect: Allow
-  #           Action:
-  #             - codepipeline:StartPipelineExecution
-  #           Resource:
-  #             - arn:aws:codepipeline:us-east-1:178190676612:PhotoAlbumFrontend
-  #     PolicyName: start-pipeline-execution-us-east-1-PhotoAlbumFrontend
-  #     Roles: 
-  #       - cwe-role-us-east-1-PhotoAlbumFrontend
-
-  # CodeBuildBasePolicylambdapipelinebuild:
-  #   Type: AWS::IAM::Policy
-  #   Properties: 
-  #     Groups: 
-  #       - String
-  #     PolicyDocument: 
-  #       Version: '2012-10-17'
-  #       Statement:
-  #         - Effect: Allow
-  #           Action:
-  #             - codepipeline:StartPipelineExecution
-  #           Resource:
-  #             - arn:aws:codepipeline:us-east-1:178190676612:PhotoAlbumFrontend
-  #     PolicyName: start-pipeline-execution-us-east-1-PhotoAlbumFrontend
-  #     Roles: 
-  #       - cwe-role-us-east-1-PhotoAlbumFrontend
