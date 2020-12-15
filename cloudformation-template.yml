@@ -1,23 +1,23 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: A template for voice controlled photo album app
 Resources:
-  #S3Bucket:
-  #  Type: AWS::S3::Bucket
-  #  DeletionPolicy: Retain
-  #  Properties: 
-  #    AccessControl: PublicRead
-  #    BucketName: f2020-a3-static-website-host-bucket-test
-  #    WebsiteConfiguration:
-  #      IndexDocument: index.html
-  #    VersioningConfiguration: 
-  #      Status: Enabled
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties: 
+      AccessControl: PublicRead
+      BucketName: f2020-a3-static-website-host-bucket-test
+      WebsiteConfiguration:
+        IndexDocument: index.html
+      VersioningConfiguration: 
+        Status: Enabled
     
   #S3Bucketphotos:
   #  Type: AWS::S3::Bucket
   #  DeletionPolicy: Retain
   #  Properties: 
   #    AccessControl: PublicRead
-  #    BucketName: a3-b2-jars
+  #    BucketName: a3-b2-jars-cftest
 
   #S3Bucketcodepipeline:
   #  Type: AWS::S3::Bucket
