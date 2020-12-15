@@ -5,7 +5,7 @@ import logging
 import requests
 from requests_aws4auth import AWS4Auth
 from boto3.dynamodb.conditions import Key, Attr
-
+# testing codepipeline and cloudformation
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 

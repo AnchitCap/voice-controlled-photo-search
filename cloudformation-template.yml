@@ -266,7 +266,7 @@ Resources:
                 Provider: S3
                 Version: '1'
               Configuration:
-                BucketName: S3Bucket 
+                BucketName: f2020-a3-static-website-host-bucket-test 
                 Extract: True
               InputArtifacts:
                 - Name: SourceArtifact
