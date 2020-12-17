@@ -115,6 +115,7 @@ function previewFile(input) {
         apigClient.uploadBucketKeyPut(params, encodedStr, additionalParams)
             .then(function(result) {
                 console.log('success OK');
+                document.getElementById("success_msg").innerHTML = "Successfully Uploaded"
             }).catch(function(result) {
                 console.log(result);
             });
