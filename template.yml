@@ -15,7 +15,7 @@ Resources:
       FunctionName: index-photos-cftest
       MemorySize: 128
       Timeout: 30
-      CodeUri: ./src
+      CodeUri: ./src/lf1
       Events:
         S3Trigger:
           Type: S3
